@@ -1,14 +1,25 @@
 // pages/App.jsx
+import { useState } from 'react'
 import AppHeader from '../components/AppHeader'
+import DayNavigator from '../components/DayNavigator'
+import SessionsList from '../components/SessionsList'
+import MobileContainer from '../components/MobileContainer'
 
 export default function App() {
+  const [sessions, setSessions] = useState([])
+
+  const handleDayChange = (date) => {
+    console.log('Día seleccionado:', date.toISOString())
+    // TODO: usar esta fecha como filtro o clave de guardado
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <AppHeader />
-      <main className="p-4">
-        <h1 className="text-2xl font-bold">Página Principal</h1>
-        <p>Bienvenido a la app del gimnasio</p>
-      </main>
+      <MobileContainer>
+        <DayNavigator onChange={handleDayChange} />
+        <SessionsList sessions={sessions} />
+      </MobileContainer>
     </div>
   )
 }
