@@ -10,29 +10,32 @@ export default function DayNavigator({ onChange }) {
     onChange?.(newDate)
   }
 
-  const displayLabel = isToday(selectedDate)
-    ? 'Today'
-    : format(selectedDate, 'EEEE dd MMMM')
+  const displayLabel = `Session for ${
+    isToday(selectedDate)
+      ? 'today'
+      : format(selectedDate, 'EEE dd MMM') // día y mes abreviados a 3 letras
+  }`
 
   return (
-    <div className="flex justify-between items-center py-4">
-      <span className="text-lg font-medium">
-        {displayLabel}
-      </span>
-      <div className="flex gap-4">
+    <div className="flex gap-4 items-center">
+      <div className="flex gap-2">
         <button
           onClick={() => changeDay(-1)}
-          className="text-xl px-2 py-1 hover:bg-gray-200 rounded"
+          className="text-xl px-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
         >
           ←
         </button>
         <button
           onClick={() => changeDay(1)}
-          className="text-xl px-2 py-1 hover:bg-gray-200 rounded"
+          className="text-xl px-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
         >
           →
         </button>
       </div>
+
+      <span className="text-md font-medium">
+        {displayLabel}
+      </span>
     </div>
   )
 }

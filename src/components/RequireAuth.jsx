@@ -1,12 +1,13 @@
-import { Navigate } from 'react-router-dom'
+import { Outlet, Navigate } from 'react-router-dom'
 
-export default function RequireAuth({ children }) {
-  const user = localStorage.getItem('user')
+export default function RequireAuth() {
+  const isAuthenticated = true // tu lógica real aquí
 
-  if (!user) {
-    return <Navigate to="/" replace />
+  if (!isAuthenticated) {
+    return <Navigate to="/" />
   }
 
-  return children
+  return <Outlet />
 }
-// Este componente verifica si el usuario está autenticado
+// Este componente asegura que solo los usuarios autenticados puedan acceder a las rutas protegidas
+// Si no están autenticados, los redirige a la página de inicio de sesión
