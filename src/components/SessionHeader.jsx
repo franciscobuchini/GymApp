@@ -1,6 +1,7 @@
 // src/components/SessionHeader.jsx
 import { useNavigate } from 'react-router-dom'
 import DayNavigator from './DayNavigator'
+import { Icon } from '@iconify/react'
 
 export default function SessionHeader() {
   const navigate = useNavigate()
@@ -14,15 +15,16 @@ export default function SessionHeader() {
   }
 
   return (
-    <header className="flex justify-between items-center p-4 shadow-md relative">
+    <header className="flex justify-between items-center p-4 bg-blue-100 relative">
+      <div>
+        <button
+          onClick={handleBack}
+          className="p-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+        >
+          <Icon icon="line-md:chevron-double-left" />
+        </button>
+      </div>
       <DayNavigator onChange={handleDayChange} />
-      <button
-        onClick={handleBack}
-        className="w-10 h-10 bg-gray-200 text-xl rounded-full flex items-center justify-center hover:bg-gray-300"
-        aria-label="Back to menu"
-      >
-        ←
-      </button>
     </header>
   )
 }

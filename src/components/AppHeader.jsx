@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DayNavigator from './DayNavigator'
+import { Icon } from '@iconify/react'
 
 export default function AppHeader() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef(null)
-
-  const user = JSON.parse(localStorage.getItem('user'))
-  const photo = user?.picture
 
   const toggleMenu = () => setOpen(!open)
   const logout = () => {
@@ -26,35 +24,22 @@ export default function AppHeader() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  console.log('Foto de usuario:', photo)
-
   const handleDayChange = (date) => {
-  console.log('Día seleccionado:', date.toISOString())
-
+    console.log('Día seleccionado:', date.toISOString())
   }
 
   return (
-    <header className="flex justify-between items-center p-4 shadow-md relative">
-      <DayNavigator onChange={handleDayChange} />
+    <header className="flex justify-between items-center p-4 bg-blue-100 relative">
+      
       <div className="relative" ref={dropdownRef}>
-        {photo ? (
-          <img
-            src={photo}
-            alt="avatar"
-            className="w-10 h-10 rounded-full cursor-pointer"
-            onClick={toggleMenu}
-            onError={e => (e.currentTarget.style.display = 'none')}
-          />
-        ) : (
-          <div
-            onClick={toggleMenu}
-            className="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center cursor-pointer"
-          >
-            {user?.name?.[0] || 'U'}
-          </div>
-        )}
+        <button
+          onClick={toggleMenu}
+          className="p-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+        >
+          <Icon icon="line-md:menu" />
+        </button>
         {open && (
-          <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
+          <div className="absolute -right-30 w-40 bg-white border rounded-md shadow-lg z-50">
             <button
               onClick={logout}
               className="w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -64,6 +49,9 @@ export default function AppHeader() {
           </div>
         )}
       </div>
+
+      <DayNavigator onChange={handleDayChange} />
+
     </header>
   )
 }
