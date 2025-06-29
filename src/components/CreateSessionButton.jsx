@@ -10,7 +10,7 @@ export default function CreateSessionButton() {
   return (
     <button
       onClick={handleClick}
-      className="mt-6 w-full text-left px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+      className="mt-6 w-full text-left p-4 bg-blue-100 text-blue-700 rounded-xl font-semibold"
     >
       + Create a session
     </button>
