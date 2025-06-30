@@ -7,12 +7,10 @@ export default function SessionPage() {
   const [sessionName, setSessionName] = useState('')
   const [exercises, setExercises] = useState([])
 
-  // Añade ejercicio con completed = false
   const handleConfirm = (exercise) => {
     setExercises(prev => [...prev, { ...exercise, completed: false }])
   }
 
-  // Actualiza completed de un ejercicio por índice
   const toggleCompleted = (index, completed) => {
     setExercises(prev => {
       const copy = [...prev]
@@ -21,7 +19,6 @@ export default function SessionPage() {
     })
   }
 
-  // Chequea si hay al menos un ejercicio completado
   const anyCompleted = exercises.some(ex => ex.completed)
 
   return (
@@ -40,23 +37,25 @@ export default function SessionPage() {
         {exercises.length > 0 && (
           <ExercisesList
             exercises={exercises}
-            onToggleCompleted={toggleCompleted} // Pasar función para actualizar
+            onToggleCompleted={toggleCompleted}
           />
         )}
 
         <ExerciseForm onConfirm={handleConfirm} />
 
-        <button
-          disabled={!anyCompleted}
-          className={
-            'mt-4 px-6 py-3 rounded-full text-white ' +
-            (anyCompleted
-              ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
-              : 'bg-gray-300 cursor-not-allowed')
-          }
-        >
-          Finish session
-        </button>
+        {exercises.length > 0 && (
+          <button
+            disabled={!anyCompleted}
+            className={
+              'px-6 py-2 rounded-full text-white w-auto ' +
+              (anyCompleted
+                ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+                : 'bg-gray-300 cursor-not-allowed')
+            }
+          >
+            Finish session
+          </button>
+        )}
       </div>
     </div>
   )
