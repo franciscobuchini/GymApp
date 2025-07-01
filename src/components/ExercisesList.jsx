@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 
 const DIFFICULTY = [
-  { id: 'red',    color: 'bg-red-500',    label: 'Hard'   },
-  { id: 'yellow', color: 'bg-yellow-500', label: 'Mid'    },
-  { id: 'green',  color: 'bg-green-500',  label: 'Easy'   },
+  { id: 'red', color: 'bg-red-500', label: 'Hard' },
+  { id: 'yellow', color: 'bg-yellow-500', label: 'Mid' },
+  { id: 'green', color: 'bg-green-500', label: 'Easy' },
 ]
 
 export default function ExercisesList({ exercises, onCompleteChange }) {
@@ -24,17 +24,14 @@ export default function ExercisesList({ exercises, onCompleteChange }) {
 function ExerciseCard({ ex, index, onCompleteChange }) {
   const [expanded, setExpanded] = useState(false)
   const [difficulty, setDifficulty] = useState(null)
-  const [weights, setWeights] = useState([])
+  const [weights, setWeights] = useState(Array(ex.series).fill(''))
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef(null)
 
-  useEffect(() => {
-    if (expanded) setWeights(Array(ex.series).fill(''))
-  }, [expanded, ex.series])
-
-  useEffect(() => {
-    onCompleteChange?.(index, difficulty)
-  }, [difficulty])
+useEffect(() => {
+  const isComplete = weightsComplete && difficulty !== null
+  onCompleteChange?.(index, isComplete)
+}, [difficulty, weights])
 
   useEffect(() => {
     const handler = e => {
@@ -48,12 +45,22 @@ function ExerciseCard({ ex, index, onCompleteChange }) {
 
   const toggle = () => setExpanded(!expanded)
 
+  const selectDiff = (id, e) => {
+    e.stopPropagation()
+    setDifficulty(id)
+    setShowDropdown(false)
+    onCompleteChange?.(index, true)
+  }
+
   const handleWeightChange = (i, value, e) => {
     e.stopPropagation()
     const newW = [...weights]
     newW[i] = value
     setWeights(newW)
-    if (value === '') setDifficulty(null)
+    if (value === '') {
+      setDifficulty(null)
+      onCompleteChange?.(index, false)
+    }
   }
 
   const weightsComplete = weights.length > 0 && weights.every(w => w !== '')
@@ -62,12 +69,6 @@ function ExerciseCard({ ex, index, onCompleteChange }) {
     e.stopPropagation()
     if (!weightsComplete) return
     setShowDropdown(prev => !prev)
-  }
-
-  const selectDiff = (id, e) => {
-    e.stopPropagation()
-    setDifficulty(id)
-    setShowDropdown(false)
   }
 
   const weightsString = weights.length && weights.some(w => w)
@@ -83,37 +84,35 @@ function ExerciseCard({ ex, index, onCompleteChange }) {
     >
       <div className="flex justify-between items-center">
         <h3 className="text-blue-700 font-semibold">{ex.name}</h3>
-
         <div className="relative" ref={dropdownRef}>
-  <button
-    onClick={toggleDropdown}
-    disabled={!weightsComplete}
-    className={`px-3 py-1 rounded-full text-sm font-medium w-[72px] text-center ${
-      !weightsComplete
-        ? 'bg-white text-gray-300 cursor-not-allowed'
-        : selected
-        ? `${selected.color} text-white`
-        : 'bg-white text-blue-700 hover:bg-gray-100'
-    }`}
-  >
-    {selected ? selected.label : 'Done'}
-  </button>
+          <button
+            onClick={toggleDropdown}
+            disabled={!weightsComplete}
+            className={`px-2 py-1 rounded-full text-xs font-medium w-[72px] text-center ${
+              !weightsComplete
+                ? 'bg-white text-gray-300 cursor-not-allowed'
+                : selected
+                ? `${selected.color} text-white`
+                : 'bg-white text-blue-700 hover:bg-gray-100'
+            }`}
+          >
+            {selected ? selected.label : 'Done'}
+          </button>
 
-  {showDropdown && (
-    <div className="absolute right-0 mt-1 flex flex-col bg-white border rounded shadow-md z-10">
-      {DIFFICULTY.map(({ id, color, label }) => (
-        <div
-          key={id}
-          onClick={e => selectDiff(id, e)}
-          className={`${color} text-white px-3 py-1 text-sm rounded-full m-1 cursor-pointer text-center`}
-        >
-          {label}
+          {showDropdown && (
+            <div className="absolute right-0 mt-1 flex flex-col bg-white border rounded shadow-md z-10">
+              {DIFFICULTY.map(({ id, color, label }) => (
+                <div
+                  key={id}
+                  onClick={e => selectDiff(id, e)}
+                  className={`${color} text-white px-2 py-1 text-xs rounded-full m-1 cursor-pointer text-center`}
+                >
+                  {label}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ))}
-    </div>
-  )}
-</div>
-
       </div>
 
       <div className="flex gap-1 text-xs text-gray-700">

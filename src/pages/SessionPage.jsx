@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import SessionHeader from '../components/SessionHeader'
 import ExercisesList from '../components/ExercisesList'
 import ExerciseForm from '../components/ExerciseForm'
 
 export default function SessionPage() {
+  const navigate = useNavigate()
   const [sessionName, setSessionName] = useState('')
   const [exercises, setExercises] = useState([])
 
@@ -19,7 +21,24 @@ export default function SessionPage() {
     })
   }
 
+  const handleEdit = (index, updated) => {
+    setExercises(prev => {
+      const copy = [...prev]
+      copy[index] = { ...copy[index], ...updated }
+      return copy
+    })
+  }
+
+  const handleDelete = (index) => {
+    setExercises(prev => prev.filter((_, i) => i !== index))
+  }
+
   const anyCompleted = exercises.some(ex => ex.completed)
+
+  const finishSession = () => {
+    // Persistencia futura aquí
+    navigate('/app')
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -34,17 +53,18 @@ export default function SessionPage() {
           className="w-full text-xl p-2 font-medium placeholder-gray-400 bg-transparent border-none focus:outline-none"
         />
 
-        {exercises.length > 0 && (
-          <ExercisesList
-            exercises={exercises}
-            onToggleCompleted={toggleCompleted}
-          />
-        )}
+        <ExercisesList
+          exercises={exercises}
+          onCompleteChange={toggleCompleted}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
 
         <ExerciseForm onConfirm={handleConfirm} />
 
         {exercises.length > 0 && (
           <button
+            onClick={finishSession}
             disabled={!anyCompleted}
             className={
               'px-6 py-2 rounded-full text-white w-auto ' +
